@@ -9,7 +9,15 @@ class Part extends Model
 {
     use HasFactory;
 
-    protected $table = 'parts'; // Nome da tabela no banco de dados
-    protected $fillable = ['name', 'description', 'price']; // Campos permitidos para preenchimento
-}
+    // Defina os campos que podem ser atribuídos em massa
+    protected $fillable = [
+        'name', 'image_path', 'description', 'price', 'purchase_link', 'category',
+        'brand', 'stock', 'rating', 'release_date', 'specs'
+    ];
 
+    // Adicione o tipo de dados 'specs' como JSON
+    protected $casts = [
+        'specs' => 'array',
+        'release_date' => 'date',
+    ];
+}

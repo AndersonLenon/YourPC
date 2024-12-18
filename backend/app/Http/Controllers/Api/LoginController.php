@@ -2,28 +2,34 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\Controller;
-use App\Http\Requests\LoginRequest;
-use Exception;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class LoginController extends Controller
 {
-    public function login(LoginRequest $request){
-        try{
-            $token = $request->user->createToken('token')->plainTextToken;
-            return compact('token');
-        }catch(Exception $error){
-            $this->errorHandler('Erro ao realizar login!!!',$error);
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $token = $user->createToken('api-token')->plainTextToken;
+
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ], 200);
         }
+
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    public function logout(Request $request){
-        try{
-            $request->user()->tokens()->delete();//deslogar de todas as sessões | dispositivos
-            return response()->json(['message' => 'Logout realizado com sucesso!!!']);
-        }catch(Exception $error){
-            $this->errorHandler('Erro ao realizar logout!!!',$error);
-        }
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+
+        return response()->json(['message' => 'Logged out successfully']);
     }
 }

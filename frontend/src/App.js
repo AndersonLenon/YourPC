@@ -4,7 +4,7 @@ import PartsList from "./components/PartsList";
 function App() {
   return (
     <div className="App">
-      <h1>Projeto YourPC</h1>
+      <h1>YourPC</h1>
       <PartsList />
     </div>
   );

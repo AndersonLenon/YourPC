@@ -12,26 +12,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
-// // Only é após registro de todas as rotas COM  middleware
-// Route::apiResource('/produtos',ProdutoController::class)->middleware('auth:sanctum');
-// Route::apiResource('/produtos',ProdutoController::class)->only(['index','show']);
-
-
-// //Except é após o registro de todas as rotas SEM middleware
-// Route::apiResource('/users',UserController::class);
-// Route::apiResource('/users',UserController::class)
-//     ->middleware('auth:sanctum') //post, put, delete com middleware
-//     ->except(['index','show']); // não cria as rotas de index e show
-
 //Agrupando por middleware sanctum todas as rotas de produtos e usuários
-Route::apiResource('parts', PartController::class)->only(['index', 'show']);
-Route::apiResource('builds', BuildController::class)->only(['index', 'show', 'store', 'update']);
+Route::apiResource('/parts', PartController::class)->only(['index', 'show', 'store']);
+Route::apiResource('builds', BuildController::class)->only(['index', 'show']);
+Route::apiResource('users', UserController::class);
 
 // Rotas protegidas (requer autenticação)
 Route::middleware('auth:sanctum')->group(function () {
-   Route::apiResource('users', UserController::class);
-   Route::apiResource('builds', BuildController::class)->only(['destroy']); // Exclusão de builds salva requer login
+   //Route::apiResource('users', UserController::class);
+   Route::apiResource('builds', BuildController::class)->only(['destroy', 'store', 'update']); // Exclusão de builds salva requer login
    Route::apiResource('favorites', FavoriteController::class);
 });
 
